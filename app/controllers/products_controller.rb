@@ -24,7 +24,18 @@ class ProductsController < ApplicationController
   end
 
   def update
-    @product = Product.update(params[:id], product_params)
+    product = Product.update(params[:id], product_params)
+    if product
+      render json: product
+    else
+      render json: { errors: product.errors }, status: 422
+    end
+  end
+
+  def destroy
+    product = Product.find(params[:id])
+    product.destroy
+    head :no_content
   end
 
   private
