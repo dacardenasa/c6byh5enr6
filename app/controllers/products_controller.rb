@@ -1,4 +1,6 @@
 class ProductsController < ApplicationController
+  skip_before_action :verify_authenticity_token
+
   def index
     @products = Product.all
     render json: @products
@@ -9,7 +11,12 @@ class ProductsController < ApplicationController
   end
 
   def create
-    @product = Product.create(product_params)
+    product = Product.create(product_params)
+    if product.save
+      render json: product
+    else
+      render json: { errors: product.errors }, status: 422
+    end
   end
 
   def edit
@@ -22,6 +29,6 @@ class ProductsController < ApplicationController
 
   private
     def product_params
-      params.require(:product).permit(:name, :price)
+      params.permit(:name, :price)
     end
 end
