@@ -16,9 +16,9 @@ class Api::V1::ProductsController < ApplicationController
   end
 
   def update
-    product = Product.update(params[:id], product_params)
-    if product
-      render json: product
+    product = Product.find(params[:id])
+    if product.update(product_params)
+      render json: product, status: 200
     else
       render json: { errors: product.errors }, status: 422
     end
@@ -27,7 +27,7 @@ class Api::V1::ProductsController < ApplicationController
   def destroy
     product = Product.find(params[:id])
     product.destroy
-    head :no_content
+    render json: product, status: 204
   end
 
   private
